@@ -1,7 +1,7 @@
-import { getTeamMembers, getServices } from '@/lib/cosmic'
+import { getTeamMembers, getServices, getPageBySlug } from '@/lib/cosmic'
 import TeamMemberCard from '@/components/TeamMemberCard'
 import ServiceCard from '@/components/ServiceCard'
-import { TeamMember, Service } from '@/types'
+import { TeamMember, Service, Page } from '@/types'
 
 export const metadata = {
   title: 'About Us - Digital Agency',
@@ -9,10 +9,24 @@ export const metadata = {
 }
 
 export default async function AboutPage() {
-  const [teamMembers, services] = await Promise.all([
+  const [aboutPage, teamMembers, services] = await Promise.all([
+    getPageBySlug('about'),
     getTeamMembers(),
     getServices()
   ])
+
+  // Cast to Page type or use fallback values
+  const page = aboutPage as Page | null
+
+  // Fallback values if page not found
+  const heroHeading = page?.metadata?.hero_heading || 'About Our Agency'
+  const heroDescription = page?.metadata?.hero_description || "We're a team of passionate professionals dedicated to creating exceptional digital experiences that drive business growth and delight users."
+  const storyTitle = page?.metadata?.story_title || 'Our Story'
+  const storyContent = page?.metadata?.story_content || '<p>Our story content goes here.</p>'
+  const stats = page?.metadata?.stats || []
+  const valuesTitle = page?.metadata?.values_title || 'Our Values'
+  const valuesSubtitle = page?.metadata?.values_subtitle || 'The principles that guide everything we do'
+  const values = page?.metadata?.values || []
 
   return (
     <div className="bg-white">
@@ -21,10 +35,10 @@ export default async function AboutPage() {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              About Our Agency
+              {heroHeading}
             </h1>
             <p className="text-xl text-white/90">
-              We're a team of passionate professionals dedicated to creating exceptional digital experiences that drive business growth and delight users.
+              {heroDescription}
             </p>
           </div>
         </div>
@@ -36,34 +50,19 @@ export default async function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-                <p className="text-gray-600 mb-4">
-                  Founded with a vision to bridge the gap between creative design and cutting-edge technology, our agency has grown from a small team of dreamers into a full-service digital powerhouse.
-                </p>
-                <p className="text-gray-600 mb-4">
-                  We believe that great digital experiences are built on a foundation of strategy, creativity, and technical excellence. Every project we undertake is an opportunity to push boundaries and deliver results that exceed expectations.
-                </p>
-                <p className="text-gray-600">
-                  Today, we work with clients ranging from ambitious startups to established enterprises, helping them navigate the digital landscape and achieve their business goals.
-                </p>
+                <h2 className="text-3xl font-bold mb-6">{storyTitle}</h2>
+                <div 
+                  className="text-gray-600 space-y-4"
+                  dangerouslySetInnerHTML={{ __html: storyContent }}
+                />
               </div>
               <div className="grid grid-cols-2 gap-6">
-                <div className="bg-primary/5 p-6 rounded-lg text-center">
-                  <div className="text-4xl font-bold text-primary mb-2">12+</div>
-                  <div className="text-gray-600">Years Experience</div>
-                </div>
-                <div className="bg-primary/5 p-6 rounded-lg text-center">
-                  <div className="text-4xl font-bold text-primary mb-2">150+</div>
-                  <div className="text-gray-600">Projects Completed</div>
-                </div>
-                <div className="bg-primary/5 p-6 rounded-lg text-center">
-                  <div className="text-4xl font-bold text-primary mb-2">50+</div>
-                  <div className="text-gray-600">Happy Clients</div>
-                </div>
-                <div className="bg-primary/5 p-6 rounded-lg text-center">
-                  <div className="text-4xl font-bold text-primary mb-2">98%</div>
-                  <div className="text-gray-600">Success Rate</div>
-                </div>
+                {stats.map((stat, index) => (
+                  <div key={index} className="bg-primary/5 p-6 rounded-lg text-center">
+                    <div className="text-4xl font-bold text-primary mb-2">{stat.number}</div>
+                    <div className="text-gray-600">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -74,33 +73,21 @@ export default async function AboutPage() {
       <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="section-title">Our Values</h2>
+            <h2 className="section-title">{valuesTitle}</h2>
             <p className="section-subtitle">
-              The principles that guide everything we do
+              {valuesSubtitle}
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <div className="text-4xl mb-4">🎯</div>
-              <h3 className="text-xl font-bold mb-3">Excellence</h3>
-              <p className="text-gray-600">
-                We're committed to delivering work that exceeds expectations and sets new standards in digital excellence.
-              </p>
-            </div>
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <div className="text-4xl mb-4">🤝</div>
-              <h3 className="text-xl font-bold mb-3">Collaboration</h3>
-              <p className="text-gray-600">
-                We work closely with our clients as partners, combining our expertise with their vision to achieve great results.
-              </p>
-            </div>
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <div className="text-4xl mb-4">💡</div>
-              <h3 className="text-xl font-bold mb-3">Innovation</h3>
-              <p className="text-gray-600">
-                We stay ahead of the curve, embracing new technologies and creative approaches to solve complex challenges.
-              </p>
-            </div>
+            {values.map((value, index) => (
+              <div key={index} className="bg-white p-8 rounded-lg shadow-sm">
+                <div className="text-4xl mb-4">{value.icon}</div>
+                <h3 className="text-xl font-bold mb-3">{value.title}</h3>
+                <p className="text-gray-600">
+                  {value.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
