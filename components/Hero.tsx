@@ -2,8 +2,20 @@ import Link from 'next/link'
 
 export default function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-24 md:py-32">
-      <div className="container">
+    <section className="relative bg-gradient-to-br from-primary to-primary-dark text-white py-24 md:py-32 overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1552664730-d307ca884978?w=2000&auto=format,compress&fit=crop)'
+        }}
+      />
+      
+      {/* Black Overlay */}
+      <div className="absolute inset-0 bg-black opacity-60" />
+      
+      {/* Content */}
+      <div className="container relative z-10">
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Creative Digital Solutions for Modern Businesses
