@@ -87,6 +87,29 @@ export interface CaseStudy extends CosmicObject {
   };
 }
 
+// Page object type
+export interface Page extends CosmicObject {
+  type: 'pages';
+  metadata: {
+    page_title: string;
+    hero_heading?: string;
+    hero_description?: string;
+    story_title?: string;
+    story_content?: string;
+    stats?: Array<{
+      number: string;
+      label: string;
+    }>;
+    values_title?: string;
+    values_subtitle?: string;
+    values?: Array<{
+      icon: string;
+      title: string;
+      description: string;
+    }>;
+  };
+}
+
 // API response type
 export interface CosmicResponse<T> {
   objects: T[];
