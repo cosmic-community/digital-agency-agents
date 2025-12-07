@@ -6,7 +6,7 @@ import { CaseStudy } from '@/types'
 export async function generateStaticParams() {
   const caseStudies = await getCaseStudies()
   
-  return caseStudies.map((caseStudy) => ({
+  return caseStudies.map((caseStudy: CaseStudy) => ({
     slug: caseStudy.slug,
   }))
 }

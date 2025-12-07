@@ -1,5 +1,6 @@
 import { getTeamMembers } from '@/lib/cosmic'
 import TeamMemberCard from '@/components/TeamMemberCard'
+import { TeamMember } from '@/types'
 
 export const metadata = {
   title: 'Our Team - Digital Agency',
@@ -20,7 +21,7 @@ export default async function TeamPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {teamMembers.map((member) => (
+          {teamMembers.map((member: TeamMember) => (
             <TeamMemberCard key={member.id} member={member} />
           ))}
         </div>
